@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { supabaseClient } from './supabase/client';
 import { useToast } from '@rewind-ui/core';
-
+import UserChat from './components/UserChat';
 function App() {
   const toast = useToast();
   const [open, setOpen] = useState(false);
@@ -35,7 +35,7 @@ function App() {
           closeOnClick: true,
           color: 'green',
           description: '',
-          duration: 3000,
+          duration: 700,
           iconType: 'success',
           pauseOnHover: true,
           radius: 'lg',
@@ -62,7 +62,7 @@ function App() {
         closeOnClick: true,
         color: 'green',
         description: '',
-        duration: 3000,
+        duration: 700,
         iconType: 'success',
         pauseOnHover: true,
         radius: 'lg',
@@ -110,7 +110,7 @@ function App() {
         <section className=" container mx-auto min-h-screen">
           {logged ? (
             <>
-              <h1 className="text-3xl">Estas logeado</h1>
+              <UserChat user={user} />
             </>
           ) : (
             <>
