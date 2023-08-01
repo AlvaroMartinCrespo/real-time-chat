@@ -2,18 +2,85 @@ import './App.css';
 import { Modal } from '@rewind-ui/core';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { supabaseClient } from './supabase/client';
+import { useToast } from '@rewind-ui/core';
 
 function App() {
+  const toast = useToast();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [logged, setLogged] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    setOpen(true);
-  }, []);
+    if (!logged) {
+      setOpen(true);
+    }
+  }, [logged]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    // Obtener name del formulario
+    const name = e.target.name.value;
+    // Insertamos el usuario en la base de datos.
+    try {
+      // Si el usuario ya existe
+      const { data: user } = await supabaseClient.from('user').select('*').eq('name', name);
+      if (user.length !== 0) {
+        setUser(user[0]);
+        setOpen(false);
+        toast.add({
+          id: 'unique-id',
+          closeOnClick: true,
+          color: 'green',
+          description: '',
+          duration: 3000,
+          iconType: 'success',
+          pauseOnHover: true,
+          radius: 'lg',
+          shadow: 'none',
+          shadowColor: 'none',
+          showProgress: true,
+          title: 'Bienvenido!',
+          tone: 'solid',
+        });
+        setLogged(true);
+        return;
+      }
+      setLoading(false);
+      //Si el usuario no existe
+      const { error } = await supabaseClient.from('user').insert({
+        name: name,
+      });
+      if (error) {
+        setLoading(false);
+        throw error;
+      }
+      toast.add({
+        id: 'unique-id',
+        closeOnClick: true,
+        color: 'green',
+        description: '',
+        duration: 3000,
+        iconType: 'success',
+        pauseOnHover: true,
+        radius: 'lg',
+        shadow: 'none',
+        shadowColor: 'none',
+        showProgress: true,
+        title: 'Bienvenido!',
+        tone: 'solid',
+      });
+      setTimeout(() => {
+        setOpen(false);
+        setLogged(true);
+        setLoading(false);
+      }, 1000);
+    } catch (err) {
+      setLoading(false);
+      console.error(err);
+    }
   };
 
   return (
@@ -27,27 +94,37 @@ function App() {
         open={open}
         onClose={() => setOpen(false)}
       >
-        <form onSubmit={handleSubmit} className="flex flex-col my-10 gap-5 justify-center items-center" action="">
-          <input className="p-5 outline-none border-2 rounded-lg" type="email" placeholder="Email" />
-          <input className="p-5 outline-none rounded-lg border-2" type="password" placeholder="Password" />
-          <button className="p-3 bg-blue-500 text-white rounded-lg">Entrar</button>
-        </form>
-      </Modal>
-      <section className="bg-slate-300 container mx-auto min-h-screen">
-        {logged ? (
-          <>
-            <h1 className="text-3xl">Estas logeado</h1>
-          </>
+        {loading ? (
+          <>Cargando ...</>
         ) : (
           <>
-            <div className="flex flex-col justify-center items-center h-screen gap-4 p-5">
-              <h1 className="text-3xl">No estas loageado, para ver el contenido logeate</h1>
-              <button className="p-3 bg-blue-500 text-white rounded-lg"> Login</button>
-            </div>
+            <form onSubmit={handleSubmit} className="flex flex-col my-10 gap-5 justify-center items-center" action="">
+              <h1 className="text-2xl">Introduce un nombre</h1>
+              <input className="p-4 outline-none border-2 rounded-lg" name="name" type="text" placeholder="Nombre" />
+              <button className="p-3 bg-blue-500 text-white rounded-lg">Entrar</button>
+            </form>
           </>
         )}
-        <div className=" grid grid-cols-1"></div>
-      </section>
+      </Modal>
+      <main className="bg-slate-300">
+        <section className=" container mx-auto min-h-screen">
+          {logged ? (
+            <>
+              <h1 className="text-3xl">Estas logeado</h1>
+            </>
+          ) : (
+            <>
+              <div className="flex flex-col justify-center items-center h-screen gap-4 p-5">
+                <h1 className="text-3xl text-center">No has introducido ningún nombre.</h1>
+                <button className="p-3 bg-blue-500 text-white rounded-lg" onClick={() => setOpen(true)}>
+                  Login
+                </button>
+              </div>
+            </>
+          )}
+          <div className=" grid grid-cols-1"></div>
+        </section>
+      </main>
     </>
   );
 }
