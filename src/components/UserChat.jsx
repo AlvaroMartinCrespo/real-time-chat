@@ -17,7 +17,7 @@ export default function UserChat({ user }) {
       setListMessages(messages);
     };
     messages();
-  }, [counterMessages]);
+  }, [counterMessages, listMessages]);
 
   useEffect(() => {
     messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
