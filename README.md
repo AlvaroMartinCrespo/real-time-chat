@@ -33,12 +33,14 @@ Antes de ejecutar la aplicación, asegúrate de tener instalado Node.js y npm (N
   npm install
   ```
 3. Configura Supabase:
+   
 - Registra una cuenta gratuita en Supabase si aún no tienes una.
 - Crea un nuevo proyecto en Supabase y obtén las credenciales de acceso (URL y clave del proyecto).
 - Copia y renombra el archivo .env.example a .env en el directorio raíz del proyecto.
 - Reemplaza SUPABASE_URL y SUPABASE_KEY en el archivo .env con las credenciales de tu proyecto de Supabase.
 
-  4. Inicia la aplicación:
+4. Inicia la aplicación:
+     
   ```bash
   npm start
   ```
