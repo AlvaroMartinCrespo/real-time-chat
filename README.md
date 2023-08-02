@@ -1,6 +1,9 @@
 # Aplicación de Chat en Tiempo Real con React, Tailwind y Supabase
 
-![Chat en Tiempo Real](url_de_la_imagen.png) 
+<div align="center"> 
+ <img src="./public/img/logo.svg" width="400" height="400" alt="image-logo">
+</div>
+
 
 Esta es una aplicación de chat en tiempo real desarrollada con React, utilizando Tailwind CSS para estilizar la interfaz y Supabase como la base de datos en tiempo real.
 
