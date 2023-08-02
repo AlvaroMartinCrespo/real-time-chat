@@ -6,8 +6,6 @@ import { useEffect } from 'react';
 import { useRef } from 'react';
 
 export default function UserChat({ user }) {
-  const [counterMessages, setCounterMessages] = useState(0);
-  const messagesEndRef = useRef(null);
   // Mensajes
   const [listMessages, setListMessages] = useState('');
 
@@ -17,10 +15,6 @@ export default function UserChat({ user }) {
       setListMessages(messages);
     };
     messages();
-  }, [counterMessages, listMessages]);
-
-  useEffect(() => {
-    messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
   }, [listMessages]);
 
   // Datos del usuario
@@ -37,7 +31,6 @@ export default function UserChat({ user }) {
       id_user: id,
       message: message,
     });
-    setCounterMessages(counterMessages + 1);
     if (error) throw error;
   };
 
@@ -63,7 +56,6 @@ export default function UserChat({ user }) {
           ) : (
             <> </>
           )}
-          <div ref={messagesEndRef} />
         </div>
         <div>
           <form action="" onSubmit={handleSubmit}>
