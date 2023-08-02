@@ -23,6 +23,25 @@ function App() {
     setLoading(true);
     // Obtener name del formulario
     const name = e.target.name.value;
+    if (name === '' || name === 'undefined') {
+      setLoading(false);
+      toast.add({
+        id: 'unique-id',
+        closeOnClick: true,
+        color: 'red',
+        description: '',
+        duration: 700,
+        iconType: 'error',
+        pauseOnHover: true,
+        radius: 'lg',
+        shadow: 'none',
+        shadowColor: 'none',
+        showProgress: true,
+        title: 'Empty name!',
+        tone: 'solid',
+      });
+      return;
+    }
     // Insertamos el usuario en la base de datos.
     try {
       // Si el usuario ya existe
@@ -57,6 +76,7 @@ function App() {
         setLoading(false);
         throw error;
       }
+      const { data: userExists } = await supabaseClient.from('user').select('*').eq('name', name);
       toast.add({
         id: 'unique-id',
         closeOnClick: true,
@@ -72,11 +92,10 @@ function App() {
         title: 'Bienvenido!',
         tone: 'solid',
       });
-      setTimeout(() => {
-        setOpen(false);
-        setLogged(true);
-        setLoading(false);
-      }, 1000);
+      setOpen(false);
+      setUser(userExists[0]);
+      setLogged(true);
+      setLoading(false);
     } catch (err) {
       setLoading(false);
       console.error(err);
